@@ -1,0 +1,56 @@
+Evidências de testes em servidor Fabric 1.21.1, Java 21, 2026-11-10.
+Servidor local isolado, offline-mode para bots de protocolo.
+Não contém dados de servidores de produção.
+
+PASS: novo sem OP processado após teleporte
+PASS: reconexão preserva posição posterior
+PASS: dimensão ausente preserva pendente
+PASS: tentativa controlada no próximo login
+PASS: reconexão rápida sem perder tentativa
+PASS: reset libera próximo login
+PASS: setplayer persiste UUID
+PASS: destino no ar cancelado
+ALL PHASE ONE CHECKS PASSED
+PASS: baseline protege jogador com .dat anterior e sem registro
+PASS: configuração preservada após reinício
+PASS: jogador antigo permanece na posição salva
+PASS: cliente comum não recebe comandos administrativos
+PASS: registro de RapidOne possui apenas um teleporte bem-sucedido
+PASS: nenhum teleporte do jogador antigo UnsafeOne após baseline
+PASS: set salvou ID completo, XYZ, yaw e pitch do Multiworld
+PASS: UUID de MultiworldNew persistido após teleporte na dimensão do Multiworld
+
+[17:42:14] [Server thread/INFO] (shirokaispawn) Shirokai Spawn iniciado; 0 UUIDs protegidos/processados
+[17:42:49] [Server thread/INFO] (shirokaispawn) Teleporte concluído para a3ab3d3b-e862-3cf8-ba40-9ba26a4228cf em minecraft:overworld
+[17:42:59] [Server thread/WARN] (shirokaispawn) Destino indisponível: missing:world; jogador 954dd907-29ae-3721-9770-a572ce48f8dc continua pendente
+[17:43:02] [Server thread/INFO] (shirokaispawn) Teleporte concluído para 954dd907-29ae-3721-9770-a572ce48f8dc em minecraft:overworld
+[17:43:06] [Server thread/INFO] (shirokaispawn) Teleporte concluído para f9118fcb-947f-3da3-8743-502f91af2546 em minecraft:overworld
+[17:43:08] [Server thread/INFO] (shirokaispawn) Teleporte concluído para a3ab3d3b-e862-3cf8-ba40-9ba26a4228cf em minecraft:overworld
+[17:43:11] [Server thread/WARN] (shirokaispawn) Destino inseguro; teleporte cancelado para 3875af1f-1ef9-307c-bd41-6782ce52da66
+[17:45:01] [Server thread/INFO] (shirokaispawn) Shirokai Spawn iniciado; 4 UUIDs protegidos/processados
+[17:45:13] [Server thread/INFO] (shirokaispawn) Teleporte concluído para c65710a8-57c9-356c-b8b9-f4d92a1f0624 em minecraft:overworld
+[17:46:26] [Server thread/INFO] (shirokaispawn) Teleporte concluído para c65710a8-57c9-356c-b8b9-f4d92a1f0624 em multiworld:shirokai_test
+[17:46:35] [Server thread/INFO] (shirokaispawn) Teleporte concluído para 6712ef8a-24ae-3178-8308-55efdb1575c2 em multiworld:shirokai_test
+
+Posições e comandos relevantes do cliente administrador:
+{"event":"commands","name":"SpawnAdmin","hasAdmin":true}
+{"event":"position","name":"SpawnAdmin","x":100.5,"y":81,"z":100.5,"yaw":0,"pitch":0,"flags":{"_value":0,"x":false,"y":false,"z":false,"yaw":false,"pitch":false},"teleportId":1}
+COMMAND mw tp multiworld:shirokai_test
+COMMAND execute in multiworld:shirokai_test run forceload add 192 192 208 208
+{"event":"commands","name":"SpawnAdmin","hasAdmin":true}
+{"event":"position","name":"SpawnAdmin","x":0,"y":-56,"z":0,"yaw":0,"pitch":0,"flags":{"_value":0,"x":false,"y":false,"z":false,"yaw":false,"pitch":false},"teleportId":2}
+COMMAND execute in multiworld:shirokai_test run fill 198 80 198 203 80 203 minecraft:stone
+COMMAND execute in multiworld:shirokai_test run tp @s 200.5 81 200.5 45 10
+COMMAND shirokaispawn set
+COMMAND tp @s 220.5 81 220.5
+{"event":"position","name":"SpawnAdmin","x":200.5,"y":81,"z":200.5,"yaw":45,"pitch":10,"flags":{"_value":0,"x":false,"y":false,"z":false,"yaw":false,"pitch":false},"teleportId":3}
+{"event":"position","name":"SpawnAdmin","x":220.5,"y":81,"z":220.5,"yaw":0,"pitch":0,"flags":{"_value":24,"x":false,"y":false,"z":false,"yaw":true,"pitch":true},"teleportId":4}
+COMMAND shirokaispawn test
+{"event":"position","name":"SpawnAdmin","x":200.5,"y":81,"z":200.5,"yaw":45,"pitch":10,"flags":{"_value":0,"x":false,"y":false,"z":false,"yaw":false,"pitch":false},"teleportId":5}
+COMMAND shirokaispawn info
+
+Cliente novo sem mod:
+{"event":"commands","name":"MultiworldNew","hasAdmin":false}
+{"event":"position","name":"MultiworldNew","x":-8.5,"y":-60,"z":9.5,"yaw":0,"pitch":0,"flags":{"_value":0,"x":false,"y":false,"z":false,"yaw":false,"pitch":false},"teleportId":1}
+{"event":"commands","name":"MultiworldNew","hasAdmin":false}
+{"event":"position","name":"MultiworldNew","x":200.5,"y":81,"z":200.5,"yaw":45,"pitch":10,"flags":{"_value":0,"x":false,"y":false,"z":false,"yaw":false,"pitch":false},"teleportId":2}

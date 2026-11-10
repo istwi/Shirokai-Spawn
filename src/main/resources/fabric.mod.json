@@ -1,0 +1,7 @@
+{
+ "schemaVersion":1,"id":"shirokaispawn","version":"${version}","name":"Shirokai Spawn",
+ "description":"Spawn inicial seguro por UUID para servidores Fabric e Multiworld.",
+ "environment":"server","entrypoints":{"main":["dev.shirokai.spawn.ShirokaiSpawn"]},
+ "mixins":["shirokaispawn.mixins.json"],
+ "depends":{"fabricloader":">=0.16.10","minecraft":"1.21.1","java":">=21","fabric-api":"*","fabric-permissions-api-v0":"*"}
+}

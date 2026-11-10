@@ -1,0 +1,17 @@
+plugins { id 'fabric-loom' version '1.8.13'; id 'maven-publish' }
+version = '1.0.0'
+group = 'dev.shirokai'
+base { archivesName = 'shirokai-spawn' }
+repositories { maven { url = 'https://maven.nucleoid.xyz/' } }
+dependencies {
+ minecraft 'com.mojang:minecraft:1.21.1'
+ mappings 'net.fabricmc:yarn:1.21.1+build.3:v2'
+ modImplementation 'net.fabricmc:fabric-loader:0.16.10'
+ modImplementation 'net.fabricmc.fabric-api:fabric-api:0.116.1+1.21.1'
+ modImplementation 'me.lucko:fabric-permissions-api:0.3.1'
+ include 'me.lucko:fabric-permissions-api:0.3.1'
+}
+java { toolchain.languageVersion = JavaLanguageVersion.of(21); withSourcesJar() }
+processResources { inputs.property 'version', project.version; filesMatching('fabric.mod.json') { expand version: project.version } }
+dependencies { testImplementation 'org.junit.jupiter:junit-jupiter:5.11.4'; testRuntimeOnly 'org.junit.platform:junit-platform-launcher' }
+test { useJUnitPlatform() }

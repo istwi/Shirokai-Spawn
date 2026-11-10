@@ -1,0 +1,1 @@
+{"required":true,"package":"dev.shirokai.spawn.mixin","compatibilityLevel":"JAVA_21","mixins":["JoinMixin"],"injectors":{"defaultRequire":1}}
