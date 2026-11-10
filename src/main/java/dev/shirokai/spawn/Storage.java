@@ -23,7 +23,20 @@ final class Storage {
   try(var reader=Files.newBufferedReader(path)) { T v=JSON.fromJson(reader,type); if(v==null) throw new IOException("JSON vazio"); return v; }
   catch(JsonParseException e) { throw new IOException("JSON inválido: "+path,e); }
  }
+ static class Destination {
+  String dimension;
+  double x,y,z;
+  float yaw,pitch;
+  Destination(String dimension,double x,double y,double z,float yaw,float pitch) {
+   this.dimension=dimension;this.x=x;this.y=y;this.z=z;this.yaw=yaw;this.pitch=pitch;
+  }
+  void validate() throws IOException {
+   if(dimension==null||net.minecraft.util.Identifier.tryParse(dimension)==null||!Double.isFinite(x)||!Double.isFinite(y)||!Double.isFinite(z)||!Float.isFinite(yaw)||!Float.isFinite(pitch)||Math.abs(x)>29999984||Math.abs(z)>29999984||pitch < -90||pitch>90)
+    throw new IOException("Destino de exploração inválido");
+  }
+ }
  static class Config {
+  Destination explorar;
   boolean enabled=true;
   String dimension="minecraft:overworld";
   double x=0.5,y=80,z=0.5;
@@ -34,6 +47,7 @@ final class Storage {
   void validate() throws IOException {
    if(net.minecraft.util.Identifier.tryParse(dimension)==null || !Double.isFinite(x)||!Double.isFinite(y)||!Double.isFinite(z)||!Float.isFinite(yaw)||!Float.isFinite(pitch)||Math.abs(x)>29999984||Math.abs(z)>29999984||pitch < -90||pitch>90||teleportDelayTicks<0||teleportDelayTicks>1200)
     throw new IOException("Configuração inválida; delay permitido: 0..1200");
+   if(explorar!=null) explorar.validate();
    if(!firstJoinOnly || !protectExistingPlayers) throw new IOException("firstJoinOnly e protectExistingPlayers devem ser true para proteger jogadores antigos");
   }
  }

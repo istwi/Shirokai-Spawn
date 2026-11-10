@@ -1,5 +1,25 @@
 # Validação executada
 
+## Versão 1.1.0 — `/explorar`
+
+Build Java 21 concluído e sete testes JUnit aprovados (os quatro anteriores e três novos para configuração antiga, persistência independente de exploração e rejeição de destino inválido).
+
+Em servidor Fabric 1.21.1 com Multiworld 1.14.2, clientes de protocolo sem o mod verificaram:
+
+- Configuração da versão 1.0 carregada sem apagar nem migrar o JSON manualmente.
+- `/explorar` disponível para jogador sem OP, com mensagem clara antes de configurar o destino.
+- Administrador salvou `multiworld:shirokai_test`, XYZ 300.5 / 81 / 300.5, yaw 70 e pitch -10 usando `setexplorar`.
+- Spawn inicial permaneceu em XYZ 200.5 / 81 / 200.5; a configuração de exploração foi salva separadamente.
+- Jogador comum usou `/explorar` a partir do overworld e chegou à dimensão Multiworld com posição e rotação corretas.
+- Jogador sem OP tentou `setexplorar` e recebeu bloqueio; o JSON não mudou.
+- Dimensão ausente e destino sem chão cancelaram `/explorar` sem mover o jogador.
+- `reload` restaurou o destino válido e o comando voltou a funcionar.
+- O arquivo de UUIDs de primeiro acesso permaneceu idêntico durante os comandos e falhas.
+
+Esses testes usaram clientes de protocolo e classes de desenvolvimento, com as mesmas limitações de cliente gráfico e LuckPerms descritas abaixo. Evidências: `docs/evidencias-explorar.txt`.
+
+## Versão 1.0.0 — testes originais
+
 Data: 10/11/2026. Ambiente isolado: Minecraft 1.21.1, Fabric Loader 0.16.10, Fabric API 0.116.1+1.21.1, Java 21; Multiworld 1.14.2 com Fantasy 0.6.3+1.21 na segunda etapa.
 
 ## Build e testes automatizados

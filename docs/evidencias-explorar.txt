@@ -1,0 +1,30 @@
+Shirokai Spawn 1.1.0 — testes locais Fabric 1.21.1 / Multiworld 1.14.2 / Java 21
+Build: concluído. JUnit: 7 testes, 0 falhas, 0 erros.
+
+PASS: configuração 1.0 carregada sem migração manual
+PASS: jogador sem OP recebe /explorar, mas não comandos administrativos
+PASS: destino ausente informa jogador sem teleportar
+Successfully filled 36 block(s)
+PASS: setexplorar preserva spawn inicial
+PASS: destino salvo com dimensão, XYZ, yaw e pitch
+Teleported MultiworldNew to 100.500000, 81.000000, 100.500000
+PASS: jogador comum teleporta entre dimensões ao usar /explorar
+PASS: rotação de exploração aplicada
+PASS: /explorar não altera registro de primeiro acesso
+PASS: jogador sem OP não consegue redefinir exploração
+Configuração recarregada.
+PASS: dimensão ausente cancela /explorar
+Configuração recarregada.
+PASS: destino inseguro cancela /explorar
+Configuração recarregada.
+PASS: reload e falhas preservam registro inicial
+PASS: sucesso informado após teleporte
+ALL EXPLORATION CHECKS PASSED
+
+Eventos de teleporte do servidor:
+[18:55:16] [Server thread/INFO] (shirokaispawn) Shirokai Spawn iniciado; 6 UUIDs protegidos/processados
+[18:55:28] [Server thread/INFO] (Minecraft) [SpawnAdmin: Destino de /explorar salvo em multiworld:shirokai_test XYZ: 300.5, 81.0, 300.5]
+[18:55:31] [Server thread/INFO] (shirokaispawn) Teleporte concluído para 6712ef8a-24ae-3178-8308-55efdb1575c2 em multiworld:shirokai_test
+[18:55:32] [Server thread/WARN] (shirokaispawn) Destino indisponível: missing:explorar; jogador 6712ef8a-24ae-3178-8308-55efdb1575c2 não foi teleportado
+[18:55:32] [Server thread/WARN] (shirokaispawn) Destino inseguro; teleporte cancelado para 6712ef8a-24ae-3178-8308-55efdb1575c2
+[18:55:33] [Server thread/INFO] (shirokaispawn) Teleporte concluído para 6712ef8a-24ae-3178-8308-55efdb1575c2 em multiworld:shirokai_test

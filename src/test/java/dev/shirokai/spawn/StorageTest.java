@@ -28,4 +28,30 @@ class StorageTest {
   assertTrue(loaded.players.contains(id));assertTrue(loaded.pending.isEmpty());assertTrue(loaded.reset.isEmpty());
  }
  @Test void rejectsNullSets() {var data=new Storage.Players();data.players=null;assertThrows(java.io.IOException.class,data::validate);}
+ @Test void oldConfigurationHasNoExplorationDestination() throws Exception {
+  Path file=directory.resolve("config.json");
+  Files.writeString(file,"{\"dimension\":\"multiworld:lobby\",\"x\":10.5,\"y\":81,\"z\":30.5}");
+  var config=Storage.read(file,Storage.Config.class);config.validate();
+  assertNull(config.explorar);assertEquals("multiworld:lobby",config.dimension);assertEquals(10.5,config.x);
+ }
+ @Test void explorationDestinationPersistsIndependently() throws Exception {
+  Path file=directory.resolve("config.json");var config=new Storage.Config();
+  config.explorar=new Storage.Destination("multiworld:exploration",200.5,81,200.5,45,10);
+  config.validate();Storage.save(file,config);
+  var loaded=Storage.read(file,Storage.Config.class);loaded.validate();
+  assertEquals("minecraft:overworld",loaded.dimension);assertEquals(0.5,loaded.x);
+  assertEquals("multiworld:exploration",loaded.explorar.dimension);assertEquals(200.5,loaded.explorar.x);
+  assertEquals(81,loaded.explorar.y);assertEquals(200.5,loaded.explorar.z);
+  assertEquals(45,loaded.explorar.yaw);assertEquals(10,loaded.explorar.pitch);
+ }
+ @Test void invalidExplorationDestinationIsRejected() {
+  for(var destination:java.util.List.of(
+   new Storage.Destination(null,0,80,0,0,0),
+   new Storage.Destination("invalid world",0,80,0,0,0),
+   new Storage.Destination("minecraft:overworld",Double.NaN,80,0,0,0),
+   new Storage.Destination("minecraft:overworld",0,80,0,0,91))) {
+   var config=new Storage.Config();config.explorar=destination;
+   assertThrows(java.io.IOException.class,config::validate);
+  }
+ }
 }

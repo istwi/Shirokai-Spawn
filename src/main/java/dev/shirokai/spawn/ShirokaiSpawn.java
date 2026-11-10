@@ -48,8 +48,10 @@ public final class ShirokaiSpawn implements ModInitializer {
    if(healthy && config.teleportOnRespawn && !alive && (config.overridePersonalRespawn || p.getSpawnPointPosition()==null)) schedule(p,true);
   });
   CommandRegistrationCallback.EVENT.register((dispatcher,access,environment)->{
+   dispatcher.register(literal("explorar").executes(c->explore(c.getSource())));
    var root=literal("shirokaispawn").requires(s->Permissions.check(s,"shirokaispawn.admin",2));
    root.then(literal("set").executes(c->command(c.getSource(),"set")));
+   root.then(literal("setexplorar").executes(c->command(c.getSource(),"setexplorar")));
    root.then(literal("info").executes(c->command(c.getSource(),"info")));
    root.then(literal("reload").executes(c->command(c.getSource(),"reload")));
    root.then(literal("test").executes(c->command(c.getSource(),"test")));
@@ -125,11 +127,24 @@ public final class ShirokaiSpawn implements ModInitializer {
    }
   }), Math.max(1,config.teleportDelayTicks)*50L,TimeUnit.MILLISECONDS));
  }
+ private int explore(ServerCommandSource source) throws com.mojang.brigadier.exceptions.CommandSyntaxException {
+  var player=source.getPlayerOrThrow();
+  if(config==null||config.explorar==null) {
+   source.sendError(Text.literal("O destino de exploração ainda não foi configurado pelo administrador."));return 0;
+  }
+  if(!teleport(player,config.explorar)) {
+   source.sendError(Text.literal("Não foi possível explorar: o destino está indisponível ou inseguro. Avise um administrador."));return 0;
+  }
+  source.sendFeedback(()->Text.literal("Você chegou ao destino de exploração!"),false);return 1;
+ }
  private boolean teleport(ServerPlayerEntity p) {
-  ServerWorld world=p.getServer().getWorld(RegistryKey.of(RegistryKeys.WORLD,Identifier.of(config.dimension)));
-  if(world==null) {LOG.warn("Destino indisponível: {}; jogador {} continua pendente",config.dimension,p.getUuid());return false;}
+  return teleport(p,new Storage.Destination(config.dimension,config.x,config.y,config.z,config.yaw,config.pitch));
+ }
+ private boolean teleport(ServerPlayerEntity p,Storage.Destination destination) {
+  ServerWorld world=p.getServer().getWorld(RegistryKey.of(RegistryKeys.WORLD,Identifier.of(destination.dimension)));
+  if(world==null) {LOG.warn("Destino indisponível: {}; jogador {} não foi teleportado",destination.dimension,p.getUuid());return false;}
   try {
-   double x=config.x,y=config.y,z=config.z;
+   double x=destination.x,y=destination.y,z=destination.z;
    BlockPos feet=BlockPos.ofFloored(x,y,z);
    world.getChunk(feet);
    Box body=new Box(x-0.3,y,z-0.3,x+0.3,y+1.8,z+0.3);
@@ -138,9 +153,9 @@ public final class ShirokaiSpawn implements ModInitializer {
     var state=world.getBlockState(pos);
     if(!state.getFluidState().isEmpty()||state.isOf(net.minecraft.block.Blocks.FIRE)||state.isOf(net.minecraft.block.Blocks.SOUL_FIRE)||state.isOf(net.minecraft.block.Blocks.MAGMA_BLOCK)||state.isOf(net.minecraft.block.Blocks.CACTUS)||state.isOf(net.minecraft.block.Blocks.CAMPFIRE)||state.isOf(net.minecraft.block.Blocks.SOUL_CAMPFIRE)||state.isOf(net.minecraft.block.Blocks.SWEET_BERRY_BUSH)||state.isOf(net.minecraft.block.Blocks.POWDER_SNOW)||state.isOf(net.minecraft.block.Blocks.WITHER_ROSE)||state.isOf(net.minecraft.block.Blocks.END_PORTAL)||state.isOf(net.minecraft.block.Blocks.NETHER_PORTAL)) return unsafe(p);
    }
-   p.teleport(world,x,y,z,config.yaw,config.pitch);p.fallDistance=0;
+   p.teleport(world,x,y,z,destination.yaw,destination.pitch);p.fallDistance=0;
    boolean ok=p.getServerWorld()==world && p.squaredDistanceTo(x,y,z)<0.01;
-   if(ok) LOG.info("Teleporte concluído para {} em {}",p.getUuid(),config.dimension);
+   if(ok) LOG.info("Teleporte concluído para {} em {}",p.getUuid(),destination.dimension);
    return ok;
   } catch(Exception e) {LOG.error("Falha no teleporte de {}",p.getUuid(),e);return false;}
  }
@@ -151,6 +166,13 @@ public final class ShirokaiSpawn implements ModInitializer {
    if(config==null) throw new IOException("Configuração indisponível");
    switch(action) {
     case "info" -> s.sendFeedback(()->Text.literal(config.dimension+" XYZ: "+config.x+", "+config.y+", "+config.z+" yaw="+config.yaw+" pitch="+config.pitch),false);
+    case "setexplorar" -> {
+     var p=s.getPlayerOrThrow();
+     Storage.Config next=Storage.JSON.fromJson(Storage.JSON.toJson(config),Storage.Config.class);
+     next.explorar=new Storage.Destination(p.getServerWorld().getRegistryKey().getValue().toString(),p.getX(),p.getY(),p.getZ(),p.getYaw(),p.getPitch());
+     next.validate();Storage.save(configFile,next);config=next;
+     s.sendFeedback(()->Text.literal("Destino de /explorar salvo em "+config.explorar.dimension+" XYZ: "+config.explorar.x+", "+config.explorar.y+", "+config.explorar.z),true);
+    }
     case "set" -> {var p=s.getPlayerOrThrow();Storage.Config next=Storage.JSON.fromJson(Storage.JSON.toJson(config),Storage.Config.class);next.dimension=p.getServerWorld().getRegistryKey().getValue().toString();next.x=p.getX();next.y=p.getY();next.z=p.getZ();next.yaw=p.getYaw();next.pitch=p.getPitch();next.validate();Storage.save(configFile,next);config=next;s.sendFeedback(()->Text.literal("Spawn inicial salvo em "+config.dimension),true);}
     case "test" -> {if(!teleport(s.getPlayerOrThrow())) {s.sendError(Text.literal("Teleporte cancelado: dimensão indisponível ou destino inseguro. Consulte o log."));return 0;}}
    }

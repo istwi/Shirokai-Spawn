@@ -1,5 +1,5 @@
 plugins { id 'fabric-loom' version '1.8.13'; id 'maven-publish' }
-version = '1.0.0'
+version = '1.1.0'
 group = 'dev.shirokai'
 base { archivesName = 'shirokai-spawn' }
 repositories { maven { url = 'https://maven.nucleoid.xyz/' } }
